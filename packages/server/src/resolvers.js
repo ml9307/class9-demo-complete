@@ -1,27 +1,14 @@
-import { meals, categories } from "../data/meals.js";
+import { Meal, Category } from "./models.js";
 
 export const resolvers = {
   Query: {
-    meals: (parent, args) => {
-      return meals.map((meal) => {
-        const category = categories.find((c) => c.id === meal.categoryId);
-        return {
-          ...meal,
-          category,
-        };
+    meals: async (parent, args) => {
+      return await Meal.findAll({
+        include: Category,
       });
     },
-    meal: (parent, args) => {
-      const meal = meals.find((m) => m.id === parseInt(args.id));
-
-      if (meal === undefined) {
-        return null;
-      }
-      const category = categories.find((c) => c.id === meal.categoryId);
-      return {
-        ...meal,
-        category,
-      };
+    meal: async (parent, args) => {
+      return await Meal.findByPk(args.id);
     },
   },
 };
